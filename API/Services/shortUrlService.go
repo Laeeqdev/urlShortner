@@ -2,17 +2,20 @@ package service
 
 import (
 	"fmt"
+
 	constants "github.com/Laeeqdev/urlShortner/API/Constants"
 	repository "github.com/Laeeqdev/urlShortner/API/Repository"
+	//utils "github.com/Laeeqdev/urlShortner/API/Utils"
 )
 
 type ShortUrlService interface {
-	GetShortUrlByLongUrl(longUrl string) (string, bool)
-	GetLongUrlByShortUrl(shortUrl string) (string, bool)
-	AddUrl(longUrl string, shortUrl string) (string, bool)
+	GetShortUrlByLongUrl(longUrl string) (string, error)
+	GetLongUrlByShortUrl(shortUrl string) (string, error)
+	AddUrl(longUrl string, shortUrl string) error
 	LogAllUrls()
 	CheckIfShortUrlExists(shortUrl string) (string, bool)
 	CheckIfLongUrlExists(shortUrl string) (string, bool)
+	GenerateShortUrl(longUrl string) (string, error)
 }
 
 type ShortUrlServiceImpl struct {
@@ -56,10 +59,12 @@ func (impl *ShortUrlServiceImpl) LogAllUrls() {
 	impl.shortUrlRepository.LogAllUrls()
 }
 
-func (impl *ShortUrlServiceImpl) CheckIfShortUrlExists(shortUrl string) (string, error) {
-	return impl.GetShortUrlByLongUrl(shortUrl)
+func (impl *ShortUrlServiceImpl) CheckIfShortUrlExists(shortUrl string) (string, bool) {
+	longUrl, err := impl.GetLongUrlByShortUrl(shortUrl)
+	return longUrl, err == nil
 }
 
-func (impl *ShortUrlServiceImpl) CheckIfLongUrlExists(longUrl string) (string, error) {
-	return impl.GetLongUrlByShortUrl(longUrl)
+func (impl *ShortUrlServiceImpl) CheckIfLongUrlExists(longUrl string) (string, bool) {
+	shortUrl, err := impl.GetShortUrlByLongUrl(longUrl)
+	return shortUrl, err == nil
 }
