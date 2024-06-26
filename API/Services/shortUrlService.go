@@ -5,7 +5,7 @@ import (
 
 	constants "github.com/Laeeqdev/urlShortner/API/Constants"
 	repository "github.com/Laeeqdev/urlShortner/API/Repository"
-	//utils "github.com/Laeeqdev/urlShortner/API/Utils"
+	utils "github.com/Laeeqdev/urlShortner/API/Utils"
 )
 
 type ShortUrlService interface {
@@ -67,4 +67,31 @@ func (impl *ShortUrlServiceImpl) CheckIfShortUrlExists(shortUrl string) (string,
 func (impl *ShortUrlServiceImpl) CheckIfLongUrlExists(longUrl string) (string, bool) {
 	shortUrl, err := impl.GetShortUrlByLongUrl(longUrl)
 	return shortUrl, err == nil
+}
+
+func (impl *ShortUrlServiceImpl) GenerateShortUrl(longUrl string) (string, error) {
+	// Check if long url already in datastore
+	if shortUrl, ok := impl.CheckIfLongUrlExists(longUrl); ok {
+		return shortUrl, nil
+	}
+
+	// limit max retries to 5
+	retryLimit := 0
+RETRY_DUE_TO_COLLISION:
+	if retryLimit += 1; retryLimit <= 5 {
+		// Genrating ShortUrl
+		shortUrl := utils.GetRandomShortUrl()
+		//3) Check for collision
+		if _, ok := impl.CheckIfShortUrlExists(shortUrl); ok {
+			goto RETRY_DUE_TO_COLLISION
+		} else {
+			// 4) insert url into map
+			if err := impl.AddUrl(longUrl, shortUrl); err == nil {
+				return shortUrl, nil
+			} else {
+				panic("something went wrong")
+			}
+		}
+	}
+	return constants.EMPTY_STRING, fmt.Errorf("retry limit exceeded")
 }

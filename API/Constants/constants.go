@@ -8,4 +8,7 @@ const (
 
 const (
 	EMPTY_STRING string = ""
+	DOMAIN       string = "http://localhost:4000/"
+	SHORT_URL    string = "shortUrl"
+	APP_DOMAIN   string = "APP_DOMAIN"
 )
