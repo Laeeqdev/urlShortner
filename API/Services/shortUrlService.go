@@ -42,7 +42,7 @@ func (impl *ShortUrlServiceImpl) GetLongUrlByShortUrl(shortUrl string) (string, 
 		return constants.EMPTY_STRING, fmt.Errorf(constants.NO_LONG_URL_FOUND_FOR_GIVEN_URL)
 	}
 	fmt.Printf("successfully fetched long url. short url : %s long url : %s \n", shortUrl, longUrl)
-	return shortUrl, nil
+	return longUrl, nil
 }
 
 func (impl *ShortUrlServiceImpl) AddUrl(longUrl string, shortUrl string) error {

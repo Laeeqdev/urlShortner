@@ -54,7 +54,7 @@ func (impl *ShortUrlHandlerImpl) ShortenUrl(w http.ResponseWriter, r *http.Reque
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	urlResponse := models.UrlResponse{requestBody.LongUrl, shortUrl}
+	urlResponse := models.UrlResponse{LongUrl: requestBody.LongUrl, ShortUrl: shortUrl}
 	response, _ := json.Marshal(urlResponse)
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(response)
@@ -72,7 +72,7 @@ func (impl *ShortUrlHandlerImpl) LengthenUrl(w http.ResponseWriter, r *http.Requ
 	if err != nil {
 		w.WriteHeader(http.StatusNotFound)
 	}
-	urlResponse := models.UrlResponse{longUrl, requestBody.ShortUrl}
+	urlResponse := models.UrlResponse{LongUrl: longUrl, ShortUrl: requestBody.ShortUrl}
 	response, _ := json.Marshal(urlResponse)
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(response)
