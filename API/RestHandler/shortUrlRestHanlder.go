@@ -116,5 +116,6 @@ func (impl *ShortUrlHandlerImpl) parseAndValidateRequest(requestBody interface{}
 func (impl *ShortUrlHandlerImpl) GetTopDomains(w http.ResponseWriter, r *http.Request) {
 	topDomains := impl.shortUrlService.GetTopDomains(3)
 	response, _ := json.Marshal(topDomains)
+	w.Header().Set("Content-Type", "application/json")
 	w.Write(response)
 }
