@@ -96,11 +96,11 @@ RETRY_DUE_TO_COLLISION:
 			if err := impl.AddUrl(longUrl, shortUrl); err == nil {
 				return shortUrl, nil
 			} else {
-				panic("something went wrong")
+				panic(constants.SOMETHING_WENT_WRONG)
 			}
 		}
 	}
-	return constants.EMPTY_STRING, fmt.Errorf("retry limit exceeded")
+	return constants.EMPTY_STRING, fmt.Errorf(constants.RETRY_LIMIT_EXCEEDED)
 }
 
 func (impl *ShortUrlServiceImpl) GetTopDomains(n int) []models.DomainCount {
