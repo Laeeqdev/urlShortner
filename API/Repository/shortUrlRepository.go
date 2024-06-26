@@ -6,10 +6,10 @@ import (
 )
 
 type ShortUrlRepository interface {
-	CheckGetVal4LongUrl(longUrl string) (string, bool)
-	CheckGetVal4ShortUrl(shortUrl string) (string, bool)
-	InsertUrlPair(longUrl string, shortUrl string) (string, bool)
-	LogAll()
+	GetShortUrlByLongUrl(longUrl string) (string, bool)
+	GetLongUrlByShortUrl(shortUrl string) (string, bool)
+	AddUrl(longUrl string, shortUrl string) (string, bool)
+	LogAllUrls()
 }
 type ShortUrlRepositoryImpl struct {
 	LongUrlToShortUrlMap map[string]string
@@ -25,21 +25,21 @@ func NewShortUrlRepositoryImpl(LongUrlToShortUrlMap map[string]string, ShortUrlT
 	}
 }
 
-func (impl *ShortUrlRepositoryImpl) CheckGetVal4LongUrl(longUrl string) (string, bool) {
+func (impl *ShortUrlRepositoryImpl) GetShortUrlByLongUrl(longUrl string) (string, bool) {
 	impl.Mutexx.RLock()
 	shortUrl, ok := impl.LongUrlToShortUrlMap[longUrl]
 	impl.Mutexx.RUnlock()
 	return shortUrl, ok
 }
 
-func (impl *ShortUrlRepositoryImpl) CheckGetVal4ShortUrl(shortUrl string) (string, bool) {
+func (impl *ShortUrlRepositoryImpl) GetLongUrlByShortUrl(shortUrl string) (string, bool) {
 	impl.Mutexx.RLock()
 	longUrl, ok := impl.ShortUrlToLongUrlMap[shortUrl]
 	impl.Mutexx.RUnlock()
 	return longUrl, ok
 }
 
-func (impl *ShortUrlRepositoryImpl) InsertUrlPair(longUrl string, shortUrl string) bool {
+func (impl *ShortUrlRepositoryImpl) AddUrl(longUrl string, shortUrl string) bool {
 	impl.Mutexx.Lock()
 	impl.LongUrlToShortUrlMap[longUrl] = shortUrl
 	impl.ShortUrlToLongUrlMap[shortUrl] = longUrl
@@ -47,7 +47,7 @@ func (impl *ShortUrlRepositoryImpl) InsertUrlPair(longUrl string, shortUrl strin
 	return true
 }
 
-func (impl *ShortUrlRepositoryImpl) LogAll() {
+func (impl *ShortUrlRepositoryImpl) LogAllUrls() {
 	for longUrl, shortUrl := range impl.LongUrlToShortUrlMap {
 		fmt.Println(longUrl, shortUrl)
 	}
