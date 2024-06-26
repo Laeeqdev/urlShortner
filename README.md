@@ -1,6 +1,6 @@
 # urlshortener
 
-DockerHub Image : https://hub.docker.com/repository/docker/kudligi97/urlshortener
+DockerHub Image : https://hub.docker.com/repository/docker/laeeqa222/url_shortner/
 
 ## Endpoints
 
