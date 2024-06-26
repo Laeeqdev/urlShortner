@@ -5,7 +5,7 @@ type ShortUrlRequest struct {
 }
 
 type LongUrlRequest struct {
-	ShortUrl string `json:"short_url" validate:"required,alphanum"`
+	ShortUrl string `json:"short_url" validate:"required,url"`
 }
 
 type UrlResponse struct {

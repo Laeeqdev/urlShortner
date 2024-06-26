@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"strings"
 
 	constants "github.com/Laeeqdev/urlShortner/API/Constants"
 	models "github.com/Laeeqdev/urlShortner/API/Models"
@@ -67,8 +68,8 @@ func (impl *ShortUrlHandlerImpl) LengthenUrl(w http.ResponseWriter, r *http.Requ
 	if ok := impl.parseAndValidateRequest(&requestBody, w, r); !ok {
 		return
 	}
-
-	longUrl, err := impl.shortUrlService.GetLongUrlByShortUrl(requestBody.ShortUrl)
+	shortUrl := strings.TrimPrefix(requestBody.ShortUrl, constants.DOMAIN)
+	longUrl, err := impl.shortUrlService.GetLongUrlByShortUrl(shortUrl)
 
 	if err != nil {
 		w.WriteHeader(http.StatusNotFound)
