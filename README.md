@@ -117,7 +117,7 @@ Server will be listening on http://localhost:9090/
 
 > $ docker pull 
 
-> $ docker run -p 9090:9090 kudligi97/urlshortener:standalone
+> $ docker run -p 9090:9090 laeeqa222/url_shortener:latest
 
 Server will be listening on http://localhost:9090/
 
