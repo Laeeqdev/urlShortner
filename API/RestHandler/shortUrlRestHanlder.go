@@ -73,6 +73,7 @@ func (impl *ShortUrlHandlerImpl) LengthenUrl(w http.ResponseWriter, r *http.Requ
 
 	if err != nil {
 		w.WriteHeader(http.StatusNotFound)
+		return
 	}
 	urlResponse := models.UrlResponse{LongUrl: longUrl, ShortUrl: requestBody.ShortUrl}
 	response, _ := json.Marshal(urlResponse)
@@ -114,5 +115,6 @@ func (impl *ShortUrlHandlerImpl) parseAndValidateRequest(requestBody interface{}
 
 func (impl *ShortUrlHandlerImpl) GetTopDomains(w http.ResponseWriter, r *http.Request) {
 	topDomains := impl.shortUrlService.GetTopDomains(3)
-	json.NewEncoder(w).Encode(topDomains)
+	response, _ := json.Marshal(topDomains)
+	w.Write(response)
 }
