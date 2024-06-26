@@ -5,6 +5,21 @@ import (
 	"sync"
 )
 
+type LongUrlToShortUrlMap map[string]string
+type ShortUrlToLongUrlMap map[string]string
+
+func ProvideLongUrlToShortUrlMap() LongUrlToShortUrlMap {
+	return LongUrlToShortUrlMap(make(map[string]string))
+}
+
+func ProvideShortUrlToLongUrlMap() ShortUrlToLongUrlMap {
+	return ShortUrlToLongUrlMap(make(map[string]string))
+}
+
+func ProvideMutex() *sync.RWMutex {
+	return &sync.RWMutex{}
+}
+
 type ShortUrlRepository interface {
 	GetShortUrlByLongUrl(longUrl string) (string, bool)
 	GetLongUrlByShortUrl(shortUrl string) (string, bool)
@@ -12,12 +27,12 @@ type ShortUrlRepository interface {
 	LogAllUrls()
 }
 type ShortUrlRepositoryImpl struct {
-	longUrlToShortUrlMap map[string]string
-	shortUrlToLongUrlMap map[string]string
+	longUrlToShortUrlMap LongUrlToShortUrlMap
+	shortUrlToLongUrlMap ShortUrlToLongUrlMap
 	mutex                *sync.RWMutex
 }
 
-func NewShortUrlRepositoryImpl(longUrlToShortUrlMap map[string]string, shortUrlToLongUrlMap map[string]string, mutex *sync.RWMutex) *ShortUrlRepositoryImpl {
+func NewShortUrlRepositoryImpl(longUrlToShortUrlMap LongUrlToShortUrlMap, shortUrlToLongUrlMap ShortUrlToLongUrlMap, mutex *sync.RWMutex) *ShortUrlRepositoryImpl {
 	return &ShortUrlRepositoryImpl{
 		longUrlToShortUrlMap: longUrlToShortUrlMap,
 		shortUrlToLongUrlMap: shortUrlToLongUrlMap,
