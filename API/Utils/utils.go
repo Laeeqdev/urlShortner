@@ -4,10 +4,12 @@ import (
 	crypto_rand "crypto/rand"
 	"encoding/binary"
 	"fmt"
-	"github.com/btcsuite/btcutil/base58"
 	math_rand "math/rand"
+	"net/url"
 	"os"
 	"strconv"
+
+	"github.com/btcsuite/btcutil/base58"
 )
 
 var urlSize int
@@ -44,4 +46,13 @@ func GetRandomShortUrl() string {
 	data := randomBytes()
 	encoded := base58.Encode(data)
 	return encoded[:urlSize]
+}
+
+func ExtractDomain(rawUrl string) (string, error) {
+	parsedUrl, err := url.Parse(rawUrl)
+	if err != nil {
+		return "", err
+	}
+	host := parsedUrl.Hostname()
+	return host, nil
 }

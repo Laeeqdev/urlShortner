@@ -21,6 +21,7 @@ func (impl *RouterImpl) MyRouter() *mux.Router {
 	r.HandleFunc("/shorten", impl.shortUrlHandler.ShortenUrl).Methods("POST")
 	r.HandleFunc("/lengthen", impl.shortUrlHandler.LengthenUrl).Methods("POST")
 	r.HandleFunc("/{shortUrl}", impl.shortUrlHandler.Redirect).Methods("GET")
-	r.HandleFunc("/", impl.shortUrlHandler.Redirect).Methods("GET")
+	r.HandleFunc("/", impl.shortUrlHandler.LogAllUrls).Methods("GET")
+	r.HandleFunc("/metrics", impl.shortUrlHandler.GetTopDomains).Methods("POST")
 	return r
 }

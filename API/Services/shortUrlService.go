@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	constants "github.com/Laeeqdev/urlShortner/API/Constants"
+	models "github.com/Laeeqdev/urlShortner/API/Models"
 	repository "github.com/Laeeqdev/urlShortner/API/Repository"
 	utils "github.com/Laeeqdev/urlShortner/API/Utils"
 )
@@ -16,6 +17,7 @@ type ShortUrlService interface {
 	CheckIfShortUrlExists(shortUrl string) (string, bool)
 	CheckIfLongUrlExists(shortUrl string) (string, bool)
 	GenerateShortUrl(longUrl string) (string, error)
+	GetTopDomains(n int) []models.DomainCount
 }
 
 type ShortUrlServiceImpl struct {
@@ -46,6 +48,11 @@ func (impl *ShortUrlServiceImpl) GetLongUrlByShortUrl(shortUrl string) (string, 
 }
 
 func (impl *ShortUrlServiceImpl) AddUrl(longUrl string, shortUrl string) error {
+	domain, err := utils.ExtractDomain(longUrl)
+	if err != nil {
+		fmt.Printf("Error extracting domain from URL %s: %v\n", longUrl, err)
+	}
+	impl.shortUrlRepository.IncrementDomainCount(domain)
 	ok := impl.shortUrlRepository.AddUrl(longUrl, shortUrl)
 	if !ok {
 		fmt.Printf("unable to add urls short url : %s long url : %s \n", shortUrl, longUrl)
@@ -94,4 +101,8 @@ RETRY_DUE_TO_COLLISION:
 		}
 	}
 	return constants.EMPTY_STRING, fmt.Errorf("retry limit exceeded")
+}
+
+func (impl *ShortUrlServiceImpl) GetTopDomains(n int) []models.DomainCount {
+	return impl.shortUrlRepository.GetTopDomains(n)
 }

@@ -32,6 +32,7 @@ type ShortUrlHandler interface {
 	Redirect(w http.ResponseWriter, r *http.Request)
 	LogAllUrls(w http.ResponseWriter, r *http.Request)
 	parseAndValidateRequest(data interface{}, w http.ResponseWriter, r *http.Request) bool
+	GetTopDomains(w http.ResponseWriter, r *http.Request)
 }
 type ShortUrlHandlerImpl struct {
 	shortUrlService service.ShortUrlService
@@ -108,4 +109,9 @@ func (impl *ShortUrlHandlerImpl) parseAndValidateRequest(requestBody interface{}
 		return false
 	}
 	return true
+}
+
+func (impl *ShortUrlHandlerImpl) GetTopDomains(w http.ResponseWriter, r *http.Request) {
+	topDomains := impl.shortUrlService.GetTopDomains(3)
+	json.NewEncoder(w).Encode(topDomains)
 }

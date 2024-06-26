@@ -2,7 +2,10 @@ package repository
 
 import (
 	"fmt"
+	"sort"
 	"sync"
+
+	models "github.com/Laeeqdev/urlShortner/API/Models"
 )
 
 type LongUrlToShortUrlMap map[string]string
@@ -24,11 +27,14 @@ type ShortUrlRepository interface {
 	GetShortUrlByLongUrl(longUrl string) (string, bool)
 	GetLongUrlByShortUrl(shortUrl string) (string, bool)
 	AddUrl(longUrl string, shortUrl string) bool
+	IncrementDomainCount(domain string)
+	GetTopDomains(n int) []models.DomainCount
 	LogAllUrls()
 }
 type ShortUrlRepositoryImpl struct {
 	longUrlToShortUrlMap LongUrlToShortUrlMap
 	shortUrlToLongUrlMap ShortUrlToLongUrlMap
+	domainStats          map[string]int
 	mutex                *sync.RWMutex
 }
 
@@ -36,6 +42,7 @@ func NewShortUrlRepositoryImpl(longUrlToShortUrlMap LongUrlToShortUrlMap, shortU
 	return &ShortUrlRepositoryImpl{
 		longUrlToShortUrlMap: longUrlToShortUrlMap,
 		shortUrlToLongUrlMap: shortUrlToLongUrlMap,
+		domainStats:          make(map[string]int),
 		mutex:                mutex,
 	}
 }
@@ -64,7 +71,33 @@ func (impl *ShortUrlRepositoryImpl) AddUrl(longUrl string, shortUrl string) bool
 
 func (impl *ShortUrlRepositoryImpl) LogAllUrls() {
 	for longUrl, shortUrl := range impl.longUrlToShortUrlMap {
-		fmt.Println(longUrl, shortUrl)
+		fmt.Printf("long url : %s short url : %s \n", longUrl, shortUrl)
 	}
 	fmt.Println(len(impl.longUrlToShortUrlMap), len(impl.shortUrlToLongUrlMap))
+}
+
+func (impl *ShortUrlRepositoryImpl) IncrementDomainCount(domain string) {
+	impl.mutex.Lock()
+	defer impl.mutex.Unlock()
+	impl.domainStats[domain]++
+}
+
+func (impl *ShortUrlRepositoryImpl) GetTopDomains(n int) []models.DomainCount {
+	impl.mutex.RLock()
+	defer impl.mutex.RUnlock()
+
+	var domainCounts []models.DomainCount
+	for domain, count := range impl.domainStats {
+		domainCounts = append(domainCounts, models.DomainCount{Domain: domain, Count: count})
+	}
+
+	sort.Slice(domainCounts, func(i, j int) bool {
+		return domainCounts[i].Count > domainCounts[j].Count
+	})
+
+	topDomains := make([]models.DomainCount, 0)
+	for i := 0; i < n && i < len(domainCounts); i++ {
+		topDomains = append(topDomains, models.DomainCount{Domain: domainCounts[i].Domain, Count: domainCounts[i].Count})
+	}
+	return topDomains
 }

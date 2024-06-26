@@ -12,3 +12,8 @@ type UrlResponse struct {
 	LongUrl  string `json:"long_url"`
 	ShortUrl string `json:"short_url"`
 }
+
+type DomainCount struct {
+	Domain string
+	Count  int
+}
