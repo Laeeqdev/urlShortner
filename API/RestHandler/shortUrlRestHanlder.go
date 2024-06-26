@@ -43,6 +43,7 @@ func NewShortUrlHandlerImpl(shortUrlService service.ShortUrlService) *ShortUrlHa
 	return &ShortUrlHandlerImpl{shortUrlService: shortUrlService}
 }
 
+// handler for POST /shorten
 func (impl *ShortUrlHandlerImpl) ShortenUrl(w http.ResponseWriter, r *http.Request) {
 	var requestBody models.ShortUrlRequest
 
@@ -81,6 +82,7 @@ func (impl *ShortUrlHandlerImpl) LengthenUrl(w http.ResponseWriter, r *http.Requ
 	w.Write(response)
 }
 
+// handler for redirect GET /shorturl
 func (impl *ShortUrlHandlerImpl) Redirect(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	shortUrl := vars[constants.SHORT_URL]
@@ -92,6 +94,7 @@ func (impl *ShortUrlHandlerImpl) Redirect(w http.ResponseWriter, r *http.Request
 	http.Redirect(w, r, longUrl, http.StatusSeeOther)
 }
 
+// handler for GET /
 func (impl *ShortUrlHandlerImpl) LogAllUrls(w http.ResponseWriter, r *http.Request) {
 	impl.shortUrlService.LogAllUrls()
 }
@@ -113,6 +116,7 @@ func (impl *ShortUrlHandlerImpl) parseAndValidateRequest(requestBody interface{}
 	return true
 }
 
+// handler for POST /metrics
 func (impl *ShortUrlHandlerImpl) GetTopDomains(w http.ResponseWriter, r *http.Request) {
 	topDomains := impl.shortUrlService.GetTopDomains(3)
 	response, _ := json.Marshal(topDomains)
