@@ -115,7 +115,7 @@ Server will be listening on http://localhost:9090/
 
 ## to start application using docker image
 
-> $ docker pull 
+> $ docker pull laeeqa222/url_shortner:latest
 
 > $ docker run -p 9090:9090 laeeqa222/url_shortener:latest
 
