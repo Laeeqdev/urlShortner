@@ -1,0 +1,1 @@
+Claude is a family of large language models (LLMs) developed by the AI company Anthropic that prioritize safety, helpfulness, and honesty. It is accessible through a conversational interface for tasks like summarization, writing, Q&A, and coding, and is built on a "Constitutional AI" approach, meaning it evaluates its responses based on a set of pre-defined ethical rules. 
